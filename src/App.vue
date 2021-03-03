@@ -1,6 +1,7 @@
 <template>
 
   <div id="app">
+    <svg-sprite-color />
     <el-popover
       placement="bottom"
       trigger="click"
@@ -18,7 +19,7 @@
       <el-button icon="el-icon-setting" slot="reference">Options</el-button>
     </el-popover>
     <div class="map-app">
-      <MapContent ref="map" :api="api" :state="state" :shareLink="shareLink" @updateShareLinkRequested="updateUUID"/>
+      <MapContent ref="map" :api="api" :state="state" :shareLink="shareLink" :flatmapAPI="flatmapAPI" @updateShareLinkRequested="updateUUID"/>
     </div>
   </div>
 </template>
@@ -44,7 +45,8 @@ export default {
       uuid: undefined,
       state: undefined,
       prefix: "/map",
-      api: process.env.VUE_APP_API_LOCATION
+      api: process.env.VUE_APP_API_LOCATION,
+      flatmapAPI: process.env.VUE_APP_FLATMAPAPI_LOCATION 
     }
   },
   computed: {
@@ -64,7 +66,7 @@ export default {
     },
     updateUUID: function() {
       let xmlhttp = new XMLHttpRequest();
-      let url = this.api + 'map/getsharelink';
+      let url = this.api + 'map/getshareid';
       let state = this.$refs.map.getState();
       xmlhttp.open('POST', url, true);
       //Send the proper header information along with the request
