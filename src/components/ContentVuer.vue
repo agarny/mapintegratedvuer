@@ -136,6 +136,8 @@ export default {
     this.flatmapAPI = undefined;
     if (store.state.settings.flatmapAPI)
       this.flatmapAPI = store.state.settings.flatmapAPI;
+    if (store.state.settings.api)
+      this.apiLocation = store.state.settings.api;
   },
   mounted: function() {
     if (this.entry.type === 'Scaffold') {
