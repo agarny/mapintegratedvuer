@@ -247,28 +247,8 @@ export default {
       return params
     },
     resultsProcessing: function (data) {
-      // Manually add an entry for the Fabbri et al. model since it's not yet
-      // referenced by SciCrunch.
       this.results = [];
       let id = 0;
-      this.results.push({
-        description: "Computational analysis of the human sinus node action potential: model development and effects of mutations",
-        contributors: [{name: "Fabbri, Alan"}, {name: "Fantini, Matteo"}, {name: "Wilders, Ronald"}, {name: "Severi, Stefano"}],
-        numberSamples: 0,
-        sexes: undefined,
-        organs: ["heart"],
-        ages: undefined,
-        updated: undefined,
-        url: {uri: "https://models.physiomeproject.org/e/611/HumanSAN_Fabbri_Fantini_Wilders_Severi_2017.cellml/view"},
-        datasetId: undefined,
-        csvFiles: undefined,
-        id: id++,
-        doi: "https://doi.org/10.1113/jp273259",
-        scaffold: false,
-        scaffolds: false,
-        simulation: true
-      });
-      // Add the entries retrieved from SciCrunch.
       this.lastSearch = this.searchInput
       this.numberOfHits = data.numberOfHits;
       if (data.results.length === 0){
@@ -287,7 +267,9 @@ export default {
               : undefined
             : undefined, // This processing only includes each gender once into 'sexes'
           organs: element.organs
-            ? [...new Set(element.organs.map((v) => v.name))]
+            ? Array.isArray(element.organs)
+              ? [...new Set(element.organs.map((v) => v.name))]
+              : undefined
             : undefined,
           ages: element.samples
             ? "ageCategory" in element.samples[0]
@@ -298,11 +280,16 @@ export default {
           url: element.uri[0],
           datasetId: element.identifier,
           csvFiles: element.csvFiles,
-          id: id++,
+          id: id,
           doi: element.doi,
           scaffold: element.scaffolds ? true : false,
-          scaffolds: element.scaffolds ? element.scaffolds : false
+          scaffolds: element.scaffolds ? element.scaffolds : false,
+          additionalLinks: element.additionalLinks,
+          simulation: element.additionalLinks
+            ? element.additionalLinks[0].description == 'Repository'
+            : false
         });
+        id++;
       });
     },
     createfilterParams: function(params){
